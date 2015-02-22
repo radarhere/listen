@@ -185,6 +185,8 @@ class ListenFrame(wx.Frame):
 		self.lastDatum = None
 		self.paused = True
 		
+		self.newVolume = None
+		
 		self.create_menu()
 		self.create_main_panel()
 		
@@ -272,8 +274,8 @@ class ListenFrame(wx.Frame):
 		if volume == None:
 			self.slider.Disable()
 		else:
-			#wx.EVT_SCROLL_THUMBTRACK responds to each movement, whereas this is only after release
-			self.Bind(wx.EVT_SCROLL_THUMBRELEASE, self.onInputSliderChange, self.slider)
+			#wx.EVT_SCROLL_THUMBTRACK responds to each movement, whereas wx.EVT_SCROLL_THUMBRELEASE is only after release
+			self.Bind(wx.EVT_SCROLL_THUMBTRACK, self.onInputSliderChange, self.slider)
 		
 		self.hbox1 = wx.BoxSizer(wx.HORIZONTAL)
 		self.hbox1.Add(self.pause_button, border=5, flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL | wx.EXPAND)
@@ -350,8 +352,14 @@ class ListenFrame(wx.Frame):
 				return
 			return y
 	
-	def setInputVolume(self, vol):
+	def setInputVolume(self):
+		if self.newVolume == None:
+			return
+		vol = self.newVolume
 		os.system('osascript -e \'tell application "System Events" to set volume input volume '+str(vol)+'\'')
+		
+		if self.newVolume == vol:
+			self.newVolume = None
 	
 	def updateSliderLabel(self, value):
 		value = "Disabled" if value is None else "%.2f" % round(float(value) / 100,2)
@@ -360,7 +368,10 @@ class ListenFrame(wx.Frame):
 	
 	def onInputSliderChange(self, event):
 		value = self.slider.GetValue()
-		self.setInputVolume(value)
+		
+		if self.newVolume == None:
+			wx.CallLater(500, self.setInputVolume)
+		self.newVolume = value
 		
 		self.updateSliderLabel(value)
 
@@ -415,7 +426,7 @@ class ListenFrame(wx.Frame):
 		if not self.paused:
 			self.on_pause_button(None)
 		
-		saveToiTunes = False#True
+		saveToiTunes = False
 		if saveToiTunes:
 			path = None
 		else:
