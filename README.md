@@ -17,4 +17,4 @@ I have also speculated for a while about the idea of a recording program that re
 Maybe.
 
 ## Credits
-The graph code is based on http://eli.thegreenplace.net/2008/08/01/matplotlib-with-wxpython-guis/
+The graph code is based on https://eli.thegreenplace.net/2008/08/01/matplotlib-with-wxpython-guis/
