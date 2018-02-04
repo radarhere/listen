@@ -101,7 +101,7 @@ class WorkerThread(threading.Thread):
 	def export(self, filepath):
 		self.trim()
 		
-		localPath = sys.path[0].replace('/lib/python27.zip','')
+		localPath = sys.path[0].replace('/lib/python'+str(sys.version_info.major)+str(sys.version_info.minor)+'.zip','')
 		savePath = os.path.join(localPath, 'recording.wav')
 		
 		saveToiTunes = filepath is None
