@@ -140,7 +140,8 @@ class WorkerThread(threading.Thread):
 			return
 		
 		if saveToiTunes:
-			os.system('open '+filepath.replace(' ',"\ ")+'; osascript -e "on appIsRunning(appName)" -e "tell application \\"System Events\\" to (name of processes) contains appName" -e "end appIsRunning" -e "if appIsRunning(\\"iTunes\\") then" -e "tell application \\"iTunes\\" to pause" -e "end if"')
+			applicationName = "Music" if int(os.uname().release.split('.')[0]) > 18 else "iTunes"
+			os.system('open '+filepath.replace(' ',"\ ")+'; osascript -e "on appIsRunning(appName)" -e "tell application \\"System Events\\" to (name of processes) contains appName" -e "end appIsRunning" -e "if appIsRunning(\\"'+applicationName+'\\") then" -e "tell application \\"'+applicationName+'\\" to pause" -e "end if"')
 		else:
 			wx.MessageBox('File saved successfully.', 'Saved', wx.OK | wx.ICON_INFORMATION)
 		
